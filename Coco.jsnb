@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "name": "New JSNB",
+    "language_info": {
+      "name": "JavaScipt",
+      "version": "8.0"
+    }
+  },
+  "jsnbversion": "v0.1",
+  "cells": [
+    {
+      "code": "<div>\n    <h1>COCO-SSD Object Detection</h1>\n\n    <!-- Centered container for image and canvas -->\n    <div class=\"container\">\n        <!-- Image to run object detection on -->\n        <img id=\"my-image\" src=\"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSexif9JMNuYcssfYwuZFXkQzaPWmG--YwdBw&s\" alt=\"Image for detection\" />\n\n        <!-- Canvas for drawing bounding boxes and labels -->\n        <canvas id=\"my-canvas\"></canvas>\n\n        <!-- Loading message -->\n        <div id=\"loading\">Loading... Please wait while the image is being processed.</div>\n\n        <!-- Button to trigger object detection -->\n        <button id=\"start-detection\">Start Object Detection</button>\n    </div>\n</div>",
+      "status": "",
+      "output": "<div>\n    <h1>COCO-SSD Object Detection</h1>\n\n    <!-- Centered container for image and canvas -->\n    <div class=\"container\">\n        <!-- Image to run object detection on -->\n        <img id=\"my-image\" src=\"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSexif9JMNuYcssfYwuZFXkQzaPWmG--YwdBw&amp;s\" alt=\"Image for detection\">\n\n        <!-- Canvas for drawing bounding boxes and labels -->\n        <canvas id=\"my-canvas\" width=\"275\" height=\"183\"></canvas>\n\n        <!-- Loading message -->\n        <div id=\"loading\">Loading... Please wait while the image is being processed.</div>\n\n        <!-- Button to trigger object detection -->\n        <button id=\"start-detection\">Start Object Detection</button>\n    </div>\n</div>",
+      "type": "html"
+    },
+    {
+      "code": "// Load TensorFlow.js and COCO-SSD model\nawait scrib.loadScript(\"https://cdn.jsdelivr.net/npm/@tensorflow/tfjs\");\nawait scrib.loadScript(\"https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd\");",
+      "status": "[12]<br><span style=\"font-size:8px\">20ms<span></span></span>",
+      "output": "",
+      "type": "code"
+    },
+    {
+      "code": "(function (window, document, detectModule, undefined) {\n\n  // Button to trigger object detection\n  var btn = document.getElementById('start-detection');\n  btn.addEventListener(\"click\", function() {\n    detectModule.detectObjects();\n  });\n\n})(window, document, detectModule);\n\nvar detectModule = (function () {\n\n  async function detectObjects() {\n    // Show loading message\n    document.getElementById('loading').style.display = 'block';\n\n    // Load the COCO-SSD model\n    const model = await cocoSsd.load();\n    scrib.show(\"COCO-SSD model loaded\");\n\n    // Get the image element\n    const imageElement = document.getElementById('my-image');\n\n    // Ensure the image is loaded before proceeding\n    imageElement.onload = async function() {\n      // Set up the canvas to draw bounding boxes\n      const canvas = document.getElementById('my-canvas');\n      const context = canvas.getContext('2d');\n      canvas.width = imageElement.width;\n      canvas.height = imageElement.height;\n\n      // Run the object detection model\n      const predictions = await model.detect(imageElement);\n      scrib.show(predictions); // Log predictions for debugging\n\n      // Clear canvas before drawing new predictions\n      context.clearRect(0, 0, canvas.width, canvas.height);\n\n      // Draw predictions on canvas\n      predictions.forEach(prediction => {\n        // Draw the bounding box\n        context.beginPath();\n        context.rect(\n          prediction.bbox[0],  // x\n          prediction.bbox[1],  // y\n          prediction.bbox[2],  // width\n          prediction.bbox[3]   // height\n        );\n        context.lineWidth = 2;\n        context.strokeStyle = 'red';\n        context.fillStyle = 'red';\n        context.stroke();\n\n        // Draw label and confidence score slightly inside the box\n        context.font = '16px Arial';\n        context.fillText(\n          `${prediction.class} (${Math.round(prediction.score * 100)}%)`,\n          prediction.bbox[0] + 5,\n          prediction.bbox[1] > 20 ? prediction.bbox[1] - 10 : 10\n        );\n      });\n\n      // Hide loading message after detection is complete\n      document.getElementById('loading').style.display = 'none';\n    };\n\n    // Trigger the image load if it's not already loaded\n    if (imageElement.complete) {\n      imageElement.onload(); // Trigger manually if image is already loaded\n    }\n  }\n\n  return {\n    detectObjects: detectObjects\n  };\n\n})(window, document);\n\ndetectModule.detectObjects()",
+      "status": "[14]<br><span style=\"font-size:8px\">44.222s<span></span></span>",
+      "output": "COCO-SSD model loaded <br>COCO-SSD model loaded <br>COCO-SSD model loaded <br>COCO-SSD model loaded <br>",
+      "type": "code"
+    }
+  ],
+  "source": "https://github.com/gopi-suvanam/jsnb",
+  "run_on_load": false
+}
